@@ -35,7 +35,7 @@ each new market date for each customer, or select only the unique market dates p
 (without purchase details) and number those visits. 
 HINT: One of these approaches uses ROW_NUMBER() and one uses DENSE_RANK(). */
 
-SELECT
+	SELECT
 	market_date,
 	customer_id,
 	ROW_NUMBER()OVER(PARTITION BY (customer_id)ORDER BY market_date ASC)as customer_visit_frequency
@@ -50,12 +50,12 @@ SELECT
 	--query that lists each of customer's visit to the farmer's market on unique market dates
 	FROM customer_purchases;
 
+
 /* 2. Reverse the numbering of the query from a part so each customer’s most recent visit is labeled 1, 
 then write another query that uses this one as a subquery (or temp table) and filters the results to 
 only the customer’s most recent visit. */
 
-
-SELECT
+	SELECT
 	market_date,
 	customer_id,
 	DENSE_RANK()OVER(PARTITION BY (customer_id)ORDER BY market_date DESC)as customer_visit_frequency
@@ -108,7 +108,7 @@ CASE WHEN INSTR (product_name, '-')
 THEN TRIM(SUBSTR(product_name, INSTR(product_name, '-') +1))
 ELSE NULL
 END AS description
-FROM product
+FROM product;
 
 /* 2. Filter the query to show any product_size value that contain a number with REGEXP. */
 SELECT
@@ -166,7 +166,7 @@ FROM
 	RANKEDSALES
 WHERE
 	sales_total_asc = 1;
-
+	
 
 
 /* SECTION 3 */
@@ -227,7 +227,7 @@ VALUES (7, 'Apple Pie', '10"', '3', 'unit', CURRENT_TIMESTAMP);
 
 HINT: If you don't specify a WHERE clause, you are going to have a bad time.*/
 DELETE FROM product_units
-WHERE product_id = '7' AND snapshot_timestamp = '2025-11-24 19:31:48';
+WHERE product_id = '7' AND snapshot_timestamp = ( SELECT MIN(snapshot_timestamp) FROM product_units WHERE product_id = 7 );
 
 
 -- UPDATE
@@ -263,5 +263,4 @@ FROM
 ) AS vi
 WHERE
 pu.product_id = vi.product_id;
-
 
